@@ -245,9 +245,11 @@ Colt</textarea>
       if (new Set(players.map(n => n.toLowerCase())).size !== players.length) return $('err').textContent = 'No duplicate names.';
 
       game = { players, mainSong, oddSong, oddIndex: randomIndex(players.length) };
-      const link = location.href.split('#')[0].split('?')[0] + '#g=' + encode(game);
+      const code = encode(game);
+      const base = location.href.split('#')[0].split('?')[0];
+      const link = base + '?g=' + code;
       $('shareLink').value = link;
-      history.replaceState(null, '', '#g=' + encode(game));
+      history.replaceState(null, '', '?g=' + code);
       show('share');
     }
 
@@ -257,9 +259,10 @@ Colt</textarea>
     }
 
     async function nativeShare() {
-      const text = 'Odd Track game. Open this and pick your name: ' + $('shareLink').value;
+      const url = $('shareLink').value;
+      const text = 'Odd Track game. Open this and pick your name:';
       if (navigator.share) {
-        try { await navigator.share({ text }); return; } catch(e) {}
+        try { await navigator.share({ title: 'Odd Track', text, url }); return; } catch(e) {}
       }
       await copyLink();
     }
@@ -305,10 +308,13 @@ Colt</textarea>
     }
 
     function route() {
+      const params = new URLSearchParams(location.search);
+      let code = params.get('g');
       const hash = location.hash.slice(1);
-      if (hash.startsWith('g=')) {
+      if (!code && hash.startsWith('g=')) code = hash.slice(2);
+      if (code) {
         try {
-          game = decode(hash.slice(2));
+          game = decode(code);
           renderJoin();
         } catch(e) {
           console.error(e);
