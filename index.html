@@ -4,343 +4,271 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Odd Track</title>
+  <script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
   <style>
     * { box-sizing: border-box; }
-    :root {
-      --bg: #0b0b0b;
-      --card: #fff7e8;
-      --ink: #111;
-      --muted: #6f675c;
-      --green: #ccff38;
-      --blue: #82d9ff;
-      --red: #ff5638;
-      --line: #111;
-    }
-    body {
-      margin: 0;
-      min-height: 100dvh;
-      font-family: ui-rounded, "Avenir Next", system-ui, sans-serif;
-      background: radial-gradient(circle at top left, #363636, var(--bg) 45%);
-      color: var(--ink);
-      display: flex;
-      justify-content: center;
-      padding: 14px;
-    }
-    .app {
-      width: min(520px, 100%);
-      min-height: calc(100dvh - 28px);
-      background: var(--card);
-      border: 3px solid var(--line);
-      border-radius: 28px;
-      overflow: hidden;
-      box-shadow: 0 18px 60px rgba(0,0,0,.45);
-    }
-    header {
-      padding: 20px 18px 14px;
-      background: var(--green);
-      border-bottom: 3px solid var(--line);
-    }
-    .kicker { font-size: 12px; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
-    h1 { margin: 4px 0 0; font-size: 46px; line-height: .86; letter-spacing: -.06em; font-weight: 1000; }
-    main { padding: 18px; }
-    .screen { display: none; }
-    .screen.active { display: block; }
-    h2 { margin: 0 0 10px; font-size: 30px; line-height: .95; letter-spacing: -.04em; }
-    p { color: var(--muted); font-weight: 750; line-height: 1.25; margin: 0 0 14px; }
-    label { display: block; margin: 14px 0 6px; font-size: 12px; font-weight: 1000; text-transform: uppercase; letter-spacing: .08em; }
-    input, textarea {
-      width: 100%;
-      border: 3px solid var(--line);
-      border-radius: 16px;
-      background: #fffdf8;
-      padding: 14px;
-      font: inherit;
-      font-weight: 850;
-      outline: none;
-    }
-    textarea { min-height: 108px; resize: vertical; }
-    input:focus, textarea:focus { box-shadow: 0 0 0 4px rgba(130,217,255,.65); }
-    button, a.button {
-      width: 100%;
-      border: 3px solid var(--line);
-      border-radius: 18px;
-      padding: 15px 16px;
-      margin-top: 10px;
-      background: var(--ink);
-      color: #fff7e8;
-      font: inherit;
-      font-weight: 1000;
-      text-align: center;
-      text-decoration: none;
-      cursor: pointer;
-      box-shadow: 5px 5px 0 rgba(0,0,0,.18);
-    }
-    button.green { background: var(--green); color: var(--ink); }
-    button.blue, a.blue { background: var(--blue); color: var(--ink); }
-    button.red { background: var(--red); color: var(--ink); }
-    button.cream { background: #fffdf8; color: var(--ink); }
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .notice { border: 3px dashed var(--line); border-radius: 16px; padding: 12px; margin: 14px 0; background: rgba(130,217,255,.28); color: var(--ink); font-weight: 900; }
-    .error { color: #ba230c; font-weight: 1000; margin-top: 10px; }
-    .names { display: grid; gap: 10px; margin-top: 14px; }
-    .nameBtn { background: #fffdf8; color: var(--ink); text-align: left; }
-    .card {
-      border: 3px solid var(--line);
-      border-radius: 22px;
-      padding: 18px;
-      background: #fffdf8;
-      margin: 14px 0;
-    }
-    .song {
-      font-size: 38px;
-      line-height: .92;
-      letter-spacing: -.05em;
-      font-weight: 1000;
-      margin: 8px 0 12px;
-      word-break: break-word;
-    }
-    .small { font-size: 12px; color: var(--muted); font-weight: 850; }
-    .hiddenSong { filter: blur(12px); user-select: none; }
-    .revealed .hiddenSong { filter: none; }
-    .topbar { display: flex; gap: 8px; margin-bottom: 14px; }
-    .topbar button { width: auto; flex: 1; padding: 11px; margin: 0; font-size: 13px; }
-    .answer { font-size: 48px; line-height: .9; font-weight: 1000; letter-spacing: -.06em; color: var(--red); }
-    .toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: #111; color: #fff7e8; padding: 12px 16px; border-radius: 999px; font-weight: 1000; opacity: 0; pointer-events: none; transition: .18s; }
-    .toast.show { opacity: 1; }
+    :root { --bg:#090909; --card:#fff7e8; --ink:#111; --muted:#6c6256; --green:#ccff38; --blue:#82d9ff; --red:#ff5638; --line:#111; }
+    body { margin:0; min-height:100dvh; font-family:ui-rounded,"Avenir Next",system-ui,sans-serif; background:radial-gradient(circle at top left,#3a3a3a,var(--bg) 45%); color:var(--ink); display:flex; justify-content:center; padding:14px; }
+    .app { width:min(520px,100%); min-height:calc(100dvh - 28px); background:var(--card); border:3px solid var(--line); border-radius:28px; overflow:hidden; box-shadow:0 18px 60px rgba(0,0,0,.45); }
+    header { padding:20px 18px 14px; background:var(--green); border-bottom:3px solid var(--line); }
+    .kicker { font-size:12px; font-weight:1000; letter-spacing:.1em; text-transform:uppercase; }
+    h1 { margin:4px 0 0; font-size:52px; line-height:.84; letter-spacing:-.07em; font-weight:1000; }
+    main { padding:18px; }
+    .screen { display:none; } .screen.active { display:block; }
+    h2 { margin:0 0 10px; font-size:32px; line-height:.92; letter-spacing:-.045em; }
+    p { color:var(--muted); font-weight:800; line-height:1.25; margin:0 0 14px; }
+    label { display:block; margin:14px 0 6px; font-size:12px; font-weight:1000; text-transform:uppercase; letter-spacing:.08em; }
+    input { width:100%; border:3px solid var(--line); border-radius:16px; background:#fffdf8; padding:14px; font:inherit; font-weight:900; outline:none; }
+    input:focus { box-shadow:0 0 0 4px rgba(130,217,255,.65); }
+    button { width:100%; border:3px solid var(--line); border-radius:18px; padding:15px 16px; margin-top:10px; background:var(--ink); color:#fff7e8; font:inherit; font-weight:1000; text-align:center; cursor:pointer; box-shadow:5px 5px 0 rgba(0,0,0,.18); }
+    button.green { background:var(--green); color:var(--ink); } button.blue { background:var(--blue); color:var(--ink); } button.red { background:var(--red); color:var(--ink); } button.cream { background:#fffdf8; color:var(--ink); }
+    button:disabled { opacity:.45; cursor:not-allowed; }
+    .row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .code { border:3px solid var(--line); border-radius:22px; background:#fffdf8; padding:18px; margin:14px 0; text-align:center; font-size:48px; font-weight:1000; letter-spacing:.08em; }
+    .notice { border:3px dashed var(--line); border-radius:16px; padding:12px; margin:14px 0; background:rgba(130,217,255,.28); color:var(--ink); font-weight:900; }
+    .error { color:#ba230c; font-weight:1000; margin-top:10px; white-space:pre-wrap; }
+    .list { display:grid; gap:8px; margin:12px 0; }
+    .pill { border:3px solid var(--line); border-radius:16px; padding:12px; background:#fffdf8; font-weight:1000; display:flex; justify-content:space-between; gap:10px; }
+    .card { border:3px solid var(--line); border-radius:22px; padding:18px; background:#fffdf8; margin:14px 0; }
+    .song { font-size:42px; line-height:.9; letter-spacing:-.055em; font-weight:1000; margin:8px 0 12px; word-break:break-word; }
+    .small { font-size:12px; color:var(--muted); font-weight:900; text-transform:uppercase; letter-spacing:.04em; }
+    .hiddenSong { filter:blur(12px); user-select:none; } .revealed .hiddenSong { filter:none; }
+    .answer { font-size:48px; line-height:.9; font-weight:1000; letter-spacing:-.06em; color:var(--red); }
+    .toast { position:fixed; left:50%; bottom:20px; transform:translateX(-50%); background:#111; color:#fff7e8; padding:12px 16px; border-radius:999px; font-weight:1000; opacity:0; pointer-events:none; transition:.18s; }
+    .toast.show { opacity:1; }
   </style>
 </head>
 <body>
   <div class="app">
-    <header>
-      <div class="kicker">musical imposter</div>
-      <h1>Odd Track</h1>
-    </header>
-
+    <header><div class="kicker">headphones on</div><h1>Odd Track</h1></header>
     <main>
-      <section id="setup" class="screen active">
-        <h2>Set up one round</h2>
-        <p>One friend makes the round, copies one link, drops it in the group chat. Everyone picks their own name.</p>
-
-        <label>Main song, most people get this</label>
-        <input id="mainSong" value="Yeah! by Usher" autocomplete="off" />
-
-        <label>Odd song, one person gets this</label>
-        <input id="oddSong" value="Party In The U.S.A. by Miley Cyrus" autocomplete="off" />
-
-        <label>Player names, one per line</label>
-        <textarea id="players">Luke
-Kelly
-Kyla
-Ari
-Colt</textarea>
-
-        <div class="notice">Keep it simple: after you see your song, open Spotify/YouTube/Apple Music yourself and play it in headphones.</div>
-        <div id="err" class="error"></div>
-        <button class="green" id="makeBtn">Make group chat link</button>
+      <section id="home" class="screen active">
+        <h2>Musical imposter.</h2>
+        <p>One person hosts. Friends join with one link. Host starts the round. Everyone gets a private song.</p>
+        <button class="green" id="goHostBtn">Host game</button>
+        <button class="blue" id="goJoinBtn">Join game</button>
+        <div class="notice">This works like Kahoot: keep the host phone open, send the invite link, everyone joins from their own phone.</div>
       </section>
 
-      <section id="share" class="screen">
-        <h2>Send this link</h2>
-        <p>Drop this in the group chat. Everyone opens it and picks their name.</p>
-        <input id="shareLink" readonly />
-        <button class="green" id="copyBtn">Copy link</button>
-        <button class="blue" id="nativeShareBtn">Share to group chat</button>
-        <button class="cream" id="testBtn">Test the link</button>
+      <section id="hostSetup" class="screen">
+        <h2>Host setup</h2>
+        <p>Put in two songs. Don’t overthink it.</p>
+        <label>Main song, most people hear this</label>
+        <input id="mainSong" value="Yeah! by Usher" autocomplete="off" />
+        <label>Odd song, one person hears this</label>
+        <input id="oddSong" value="Party In The U.S.A. by Miley Cyrus" autocomplete="off" />
+        <label>How many players?</label>
+        <input id="playerCount" type="number" min="3" max="12" value="5" />
+        <button class="green" id="createRoomBtn">Create room</button>
+        <button class="cream" id="homeFromHostBtn">Back</button>
+        <div id="hostSetupErr" class="error"></div>
+      </section>
+
+      <section id="hostRoom" class="screen">
+        <h2>Send this invite</h2>
+        <p>Drop this link in the group chat. Keep this host screen open.</p>
+        <div id="roomCode" class="code"></div>
+        <input id="inviteLink" readonly />
+        <button class="green" id="copyInviteBtn">Copy invite link</button>
+        <div class="notice"><span id="joinedCount">0</span>/<span id="neededCount">5</span> joined. Start when everyone is in.</div>
+        <div id="playerList" class="list"></div>
+        <button class="red" id="startRoundBtn" disabled>Start round</button>
+        <button class="blue" id="revealToAllBtn" disabled>Reveal answer to everyone</button>
+        <div id="hostRoomErr" class="error"></div>
       </section>
 
       <section id="join" class="screen">
-        <h2>Pick your name</h2>
-        <p>Only tap your own name. Don’t be annoying.</p>
-        <div id="joinNames" class="names"></div>
+        <h2>Join game</h2>
+        <p>Paste the room code, or just open the invite link.</p>
+        <label>Room code</label>
+        <input id="joinCode" autocomplete="off" autocapitalize="characters" placeholder="ABC123" />
+        <label>Your name</label>
+        <input id="playerName" autocomplete="off" placeholder="Luke" />
+        <button class="green" id="joinRoomBtn">Join room</button>
+        <button class="cream" id="homeFromJoinBtn">Back</button>
+        <div id="joinErr" class="error"></div>
+      </section>
+
+      <section id="waiting" class="screen">
+        <h2>You’re in.</h2>
+        <p>Wait for the host to start the round. Do not close this.</p>
+        <div class="notice" id="waitingText">Connected to host.</div>
       </section>
 
       <section id="card" class="screen">
-        <div class="topbar"><button class="cream" id="backToNamesBtn">Names</button><button class="cream" id="rulesBtn">Rules</button></div>
-        <h2 id="cardName">Your card</h2>
+        <h2 id="cardTitle">Your song</h2>
         <p>Don’t show anyone your screen.</p>
-        <div id="songCard" class="card">
-          <div class="small">Your song is</div>
-          <div class="hiddenSong">
-            <div id="songName" class="song"></div>
-          </div>
-        </div>
-        <button class="red" id="revealBtn">Reveal my song</button>
-        <button class="blue" id="searchBtn">Open YouTube search</button>
-        <button class="green" id="voteBtn">I’m ready to vote</button>
-      </section>
-
-      <section id="vote" class="screen">
-        <h2>Vote out loud</h2>
-        <p>Everyone points at who looked the weirdest. Then reveal the answer.</p>
-        <button class="red" id="answerBtn">Reveal the imposter</button>
+        <div id="songCard" class="card"><div class="small">Your song is</div><div class="hiddenSong"><div id="songName" class="song"></div></div></div>
+        <button class="red" id="revealSongBtn">Reveal my song</button>
+        <button class="blue" id="searchSongBtn">Open YouTube search</button>
+        <div class="notice">Play it in headphones, dance, then vote out loud.</div>
       </section>
 
       <section id="answer" class="screen">
         <h2>The odd song was given to</h2>
         <div id="answerName" class="answer"></div>
-        <div class="card">
-          <div class="small">Main song</div>
-          <strong id="answerMain"></strong><br><br>
-          <div class="small">Odd song</div>
-          <strong id="answerOdd"></strong>
-        </div>
-        <button class="green" id="newRoundBtn">Make another round</button>
-      </section>
-
-      <section id="rules" class="screen">
-        <h2>Rules</h2>
-        <p>1. Everyone picks their name.<br>2. Reveal your song privately.<br>3. Play it in headphones.<br>4. Dance for 30 seconds.<br>5. Guess who has the odd song.</p>
-        <button class="cream" id="rulesBackBtn">Back</button>
+        <div class="card"><div class="small">Main song</div><strong id="answerMain"></strong><br><br><div class="small">Odd song</div><strong id="answerOdd"></strong></div>
+        <button class="green" id="playAgainBtn">Play another round</button>
       </section>
     </main>
   </div>
   <div id="toast" class="toast">Copied</div>
 
-  <script>
-    const $ = id => document.getElementById(id);
-    let game = null;
-    let selectedIndex = null;
-    let lastScreen = 'setup';
+<script>
+const $ = id => document.getElementById(id);
+const PEER_PREFIX = 'oddtrack-';
+let peer = null;
+let hostConn = null;
+let hostState = { code:'', connections:[], players:[], mainSong:'', oddSong:'', needed:5, oddPlayer:null };
+let mySong = '';
 
-    function show(id) {
-      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-      $(id).classList.add('active');
-      window.scrollTo(0, 0);
-    }
+function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); $(id).classList.add('active'); window.scrollTo(0,0); }
+function toast(text){ $('toast').textContent=text; $('toast').classList.add('show'); setTimeout(()=>$('toast').classList.remove('show'),1400); }
+function cleanCode(raw){ return (raw || '').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6); }
+function roomId(code){ return PEER_PREFIX + cleanCode(code); }
+function makeCode(){ const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let out=''; const arr=new Uint32Array(6); crypto.getRandomValues(arr); for(let i=0;i<6;i++) out += chars[arr[i] % chars.length]; return out; }
+function baseUrl(){ return location.href.split('#')[0].split('?')[0]; }
+function inviteFor(code){ return baseUrl() + '?room=' + cleanCode(code); }
+function canUsePeer(){ return typeof Peer !== 'undefined'; }
+function peerOptions(){ return { host:'0.peerjs.com', port:443, path:'/', secure:true }; }
+function send(conn, msg){ if(conn && conn.open) conn.send(msg); }
+function broadcast(msg){ hostState.connections.forEach(c => send(c, msg)); }
+function setErr(id, msg){ $(id).textContent = msg || ''; }
+function playerNames(){ return hostState.players.map(p => p.name); }
 
-    function toast(text) {
-      $('toast').textContent = text;
-      $('toast').classList.add('show');
-      setTimeout(() => $('toast').classList.remove('show'), 1400);
-    }
+function readRoomFromUrl(){ return cleanCode(new URLSearchParams(location.search).get('room')); }
+function route(){ const code = readRoomFromUrl(); if(code){ $('joinCode').value = code; show('join'); } else show('home'); }
 
-    function encode(obj) {
-      return btoa(unescape(encodeURIComponent(JSON.stringify(obj)))).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
-    }
+function renderPlayers(){
+  $('joinedCount').textContent = hostState.players.length;
+  $('neededCount').textContent = hostState.needed;
+  const box = $('playerList'); box.innerHTML = '';
+  hostState.players.forEach((p, i) => {
+    const div = document.createElement('div');
+    div.className = 'pill';
+    div.innerHTML = '<span>' + (i+1) + '. ' + p.name + '</span><span>in</span>';
+    box.appendChild(div);
+  });
+  $('startRoundBtn').disabled = hostState.players.length < 3;
+}
 
-    function decode(str) {
-      str = str.replace(/-/g, '+').replace(/_/g, '/');
-      while (str.length % 4) str += '=';
-      return JSON.parse(decodeURIComponent(escape(atob(str))));
-    }
+function createHostPeer(code){
+  if(!canUsePeer()){ setErr('hostSetupErr','Peer connection failed to load. Refresh once.'); return; }
+  peer = new Peer(roomId(code), peerOptions());
+  peer.on('open', () => {
+    hostState.code = code;
+    $('roomCode').textContent = code;
+    $('inviteLink').value = inviteFor(code);
+    history.replaceState(null, '', '?room=' + code + '&host=1');
+    renderPlayers();
+    show('hostRoom');
+  });
+  peer.on('connection', conn => {
+    hostState.connections.push(conn);
+    conn.on('data', msg => handleHostData(conn, msg));
+    conn.on('close', () => {
+      const player = hostState.players.find(p => p.conn === conn);
+      if(player) player.offline = true;
+      renderPlayers();
+    });
+  });
+  peer.on('error', err => {
+    if(err.type === 'unavailable-id') createHostPeer(makeCode());
+    else setErr('hostSetupErr','Room failed. Refresh and try again. ' + (err.message || err.type || ''));
+  });
+}
 
-    function randomIndex(max) {
-      const values = new Uint32Array(1);
-      crypto.getRandomValues(values);
-      return values[0] % max;
-    }
+function createRoom(){
+  setErr('hostSetupErr','');
+  hostState.mainSong = $('mainSong').value.trim();
+  hostState.oddSong = $('oddSong').value.trim();
+  hostState.needed = Math.max(3, Math.min(12, Number($('playerCount').value) || 5));
+  hostState.connections = []; hostState.players = []; hostState.oddPlayer = null;
+  if(!hostState.mainSong || !hostState.oddSong){ setErr('hostSetupErr','Add both songs.'); return; }
+  createHostPeer(makeCode());
+}
 
-    function cleanNames(raw) {
-      return raw.split('\n').map(x => x.trim()).filter(Boolean);
-    }
+function handleHostData(conn, msg){
+  if(!msg || msg.type !== 'join') return;
+  const name = String(msg.name || '').trim().slice(0,24);
+  if(!name){ send(conn,{type:'error', message:'Add your name.'}); return; }
+  if(playerNames().map(n=>n.toLowerCase()).includes(name.toLowerCase())){ send(conn,{type:'error', message:'Someone already used that name.'}); return; }
+  if(hostState.players.length >= hostState.needed){ send(conn,{type:'error', message:'This room is full.'}); return; }
+  hostState.players.push({ name, conn });
+  send(conn,{type:'joined', message:'You are in. Wait for host.'});
+  renderPlayers();
+}
 
-    function makeGame() {
-      const players = cleanNames($('players').value);
-      const mainSong = $('mainSong').value.trim();
-      const oddSong = $('oddSong').value.trim();
-      $('err').textContent = '';
+async function copyInvite(){
+  const link = $('inviteLink').value;
+  const text = 'Join Odd Track: ' + link + '\nRoom code: ' + hostState.code;
+  try { await navigator.clipboard.writeText(text); toast('Invite copied'); }
+  catch { $('inviteLink').select(); document.execCommand('copy'); toast('Link copied'); }
+}
 
-      if (players.length < 3) return $('err').textContent = 'Add at least 3 players.';
-      if (!mainSong || !oddSong) return $('err').textContent = 'Add both songs.';
-      if (new Set(players.map(n => n.toLowerCase())).size !== players.length) return $('err').textContent = 'No duplicate names.';
+function startRound(){
+  setErr('hostRoomErr','');
+  if(hostState.players.length < 3){ setErr('hostRoomErr','Need at least 3 players.'); return; }
+  const arr = new Uint32Array(1); crypto.getRandomValues(arr);
+  const oddIndex = arr[0] % hostState.players.length;
+  hostState.oddPlayer = hostState.players[oddIndex];
+  hostState.players.forEach((p, i) => send(p.conn, { type:'song', song: i === oddIndex ? hostState.oddSong : hostState.mainSong }));
+  $('revealToAllBtn').disabled = false;
+  toast('Songs sent');
+}
 
-      game = { players, mainSong, oddSong, oddIndex: randomIndex(players.length) };
-      const code = encode(game);
-      const base = location.href.split('#')[0].split('?')[0];
-      const link = base + '?g=' + code;
-      $('shareLink').value = link;
-      history.replaceState(null, '', '?g=' + code);
-      show('share');
-    }
+function revealToAll(){
+  if(!hostState.oddPlayer) return;
+  const msg = { type:'answer', name:hostState.oddPlayer.name, mainSong:hostState.mainSong, oddSong:hostState.oddSong };
+  broadcast(msg);
+  showAnswer(msg);
+}
 
-    async function copyLink() {
-      try { await navigator.clipboard.writeText($('shareLink').value); toast('Link copied'); }
-      catch { $('shareLink').select(); document.execCommand('copy'); toast('Link copied'); }
-    }
+function joinRoom(){
+  setErr('joinErr','');
+  const code = cleanCode($('joinCode').value);
+  const name = $('playerName').value.trim().slice(0,24);
+  if(!code){ setErr('joinErr','Add the room code.'); return; }
+  if(!name){ setErr('joinErr','Add your name.'); return; }
+  if(!canUsePeer()){ setErr('joinErr','Peer connection failed to load. Refresh once.'); return; }
+  $('joinRoomBtn').disabled = true;
+  peer = new Peer(null, peerOptions());
+  peer.on('open', () => {
+    hostConn = peer.connect(roomId(code), { reliable:true });
+    hostConn.on('open', () => { send(hostConn, { type:'join', name }); show('waiting'); });
+    hostConn.on('data', handlePlayerData);
+    hostConn.on('close', () => { setErr('joinErr','Host disconnected. Ask host to keep their phone open.'); show('join'); $('joinRoomBtn').disabled = false; });
+    hostConn.on('error', () => { setErr('joinErr','Could not join. Check the room code.'); show('join'); $('joinRoomBtn').disabled = false; });
+  });
+  peer.on('error', err => { setErr('joinErr','Could not join. Check the room code and make sure host screen is open.'); $('joinRoomBtn').disabled = false; });
+}
 
-    async function nativeShare() {
-      const url = $('shareLink').value;
-      const text = 'Odd Track game. Open this and pick your name:';
-      if (navigator.share) {
-        try { await navigator.share({ title: 'Odd Track', text, url }); return; } catch(e) {}
-      }
-      await copyLink();
-    }
+function handlePlayerData(msg){
+  if(!msg) return;
+  if(msg.type === 'error'){ setErr('joinErr', msg.message); show('join'); $('joinRoomBtn').disabled = false; }
+  if(msg.type === 'joined'){ $('waitingText').textContent = msg.message; show('waiting'); }
+  if(msg.type === 'song'){ mySong = msg.song; $('songName').textContent = mySong; $('songCard').classList.remove('revealed'); show('card'); }
+  if(msg.type === 'answer') showAnswer(msg);
+}
 
-    function renderJoin() {
-      const box = $('joinNames');
-      box.innerHTML = '';
-      game.players.forEach((name, index) => {
-        const btn = document.createElement('button');
-        btn.className = 'nameBtn';
-        btn.textContent = name;
-        btn.onclick = () => renderCard(index);
-        box.appendChild(btn);
-      });
-      show('join');
-    }
+function revealSong(){ $('songCard').classList.add('revealed'); }
+function searchSong(){ if(mySong) window.open('https://www.youtube.com/results?search_query=' + encodeURIComponent(mySong), '_blank'); }
+function showAnswer(msg){ $('answerName').textContent = msg.name; $('answerMain').textContent = msg.mainSong; $('answerOdd').textContent = msg.oddSong; show('answer'); }
+function resetApp(){ if(peer) peer.destroy(); peer = null; hostConn = null; history.replaceState(null, '', baseUrl()); location.reload(); }
 
-    function renderCard(index) {
-      selectedIndex = index;
-      const name = game.players[index];
-      const song = index === game.oddIndex ? game.oddSong : game.mainSong;
-      $('cardName').textContent = name + "'s card";
-      $('songName').textContent = song;
-      $('songCard').classList.remove('revealed');
-      lastScreen = 'card';
-      show('card');
-    }
-
-    function revealSong() {
-      $('songCard').classList.add('revealed');
-    }
-
-    function searchSong() {
-      const song = $('songName').textContent;
-      window.open('https://www.youtube.com/results?search_query=' + encodeURIComponent(song), '_blank');
-    }
-
-    function revealAnswer() {
-      $('answerName').textContent = game.players[game.oddIndex];
-      $('answerMain').textContent = game.mainSong;
-      $('answerOdd').textContent = game.oddSong;
-      show('answer');
-    }
-
-    function route() {
-      const params = new URLSearchParams(location.search);
-      let code = params.get('g');
-      const hash = location.hash.slice(1);
-      if (!code && hash.startsWith('g=')) code = hash.slice(2);
-      if (code) {
-        try {
-          game = decode(code);
-          renderJoin();
-        } catch(e) {
-          console.error(e);
-          show('setup');
-          $('err').textContent = 'That link broke. Make a new round.';
-        }
-      } else {
-        show('setup');
-      }
-    }
-
-    $('makeBtn').onclick = makeGame;
-    $('copyBtn').onclick = copyLink;
-    $('nativeShareBtn').onclick = nativeShare;
-    $('testBtn').onclick = renderJoin;
-    $('backToNamesBtn').onclick = renderJoin;
-    $('rulesBtn').onclick = () => { lastScreen = 'card'; show('rules'); };
-    $('rulesBackBtn').onclick = () => show(lastScreen);
-    $('revealBtn').onclick = revealSong;
-    $('searchBtn').onclick = searchSong;
-    $('voteBtn').onclick = () => show('vote');
-    $('answerBtn').onclick = revealAnswer;
-    $('newRoundBtn').onclick = () => { history.replaceState(null, '', location.href.split('#')[0]); show('setup'); };
-
-    window.addEventListener('hashchange', route);
-    route();
-  </script>
+$('goHostBtn').onclick = () => show('hostSetup');
+$('goJoinBtn').onclick = () => show('join');
+$('homeFromHostBtn').onclick = () => show('home');
+$('homeFromJoinBtn').onclick = () => show('home');
+$('createRoomBtn').onclick = createRoom;
+$('copyInviteBtn').onclick = copyInvite;
+$('startRoundBtn').onclick = startRound;
+$('revealToAllBtn').onclick = revealToAll;
+$('joinRoomBtn').onclick = joinRoom;
+$('revealSongBtn').onclick = revealSong;
+$('searchSongBtn').onclick = searchSong;
+$('playAgainBtn').onclick = resetApp;
+route();
+</script>
 </body>
 </html>
